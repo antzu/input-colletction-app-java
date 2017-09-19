@@ -1,8 +1,5 @@
 package test;
 
-
-
-
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -15,8 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/customers/form")
 public class CustomerFormServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-
-
 
     protected void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
@@ -31,8 +26,6 @@ public class CustomerFormServlet extends HttpServlet {
         out.println("<input type = 'submit' value = 'submit'>");
         out.println("</form>");
         out.println("</body></html>");
-
-
 
     }
 

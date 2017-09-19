@@ -11,9 +11,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
+
 import java.util.ArrayList;
-import java.util.Map;
+
 
 @WebServlet("/api/customers")
 public class CustomerApiServlet extends HttpServlet {
@@ -21,8 +21,6 @@ public class CustomerApiServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     public static ArrayList<Person> personList = new ArrayList<>();
-
-
 
     protected void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
@@ -35,8 +33,6 @@ public class CustomerApiServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
-        //application/x-www-form-urlencoded
-        //application/json
         res.setContentType("application/json");
 
         if (req.getContentType() == "application/json") {
