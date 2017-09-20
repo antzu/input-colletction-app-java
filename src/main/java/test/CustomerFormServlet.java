@@ -1,5 +1,8 @@
 package test;
 
+import test.model.Customers;
+import test.model.Person;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -21,7 +24,7 @@ public class CustomerFormServlet extends HttpServlet {
 
         out.println("<html><body>");
         out.println("<h1>My HTML Body</h1>");
-        out.println("<form action= '/api/customers' method = 'POST' enctype = 'multipart/formdata'>");
+        out.println("<form method = 'POST' enctype = 'multipart/formdata'>");
         out.println("First name: <input type='text' name='name'><br>");
         out.println("<input type = 'submit' value = 'submit'>");
         out.println("</form>");
@@ -29,6 +32,17 @@ public class CustomerFormServlet extends HttpServlet {
 
     }
 
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+
+        String input = req.getParameter("name");
+
+        Person p = new Person();
+        p.setFirstName(input);
+
+        Customers.addCustomer(p);
+
+    }
 }
 
 
