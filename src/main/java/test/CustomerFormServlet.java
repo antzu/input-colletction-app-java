@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/customers/form")
 public class CustomerFormServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-
+    //now works
     protected void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
 
