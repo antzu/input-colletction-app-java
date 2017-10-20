@@ -1,8 +1,8 @@
 package test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import test.model.Customers;
-import test.model.Person;
+import test.dao.CustomerDao;
+import test.model.Customer;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,30 +15,41 @@ import java.io.IOException;
 public class CustomerApiServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
+    CustomerDao dao = new CustomerDao();
 
     protected void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
 
         res.setContentType("application/json");
-        new ObjectMapper().writeValue(res.getOutputStream(), Customers.getCustomers());
+
+        if(req.getParameter("id") != null) {
+            Long id = Long.parseLong(req.getParameter("id"));
+            new ObjectMapper().writeValue(res.getOutputStream(), dao.getCustomer(id));
+        } else {
+            new ObjectMapper().writeValue(res.getOutputStream(), dao.getCustomers());
+        }
 
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
-        res.setContentType("application/json");
-        String input = Util.asString(req.getInputStream());
-        Person p = new ObjectMapper().readValue(input, Person.class);
-        Customers.addCustomer(p);
-        new ObjectMapper().writeValue(res.getOutputStream(), p);
+            String input = Util.asString(req.getInputStream());
+            Customer customer = new ObjectMapper().readValue(input, Customer.class);
+
+            dao.insertCustomer(customer);
 
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        Customers.clearCustomers();
+        if(req.getParameter("id") != null) {
+            Long id = Long.parseLong(req.getParameter("id"));
+            dao.deleteCustomer(id);
+        } else {
+            dao.deleteAllCustomers();
+        }
 
     }
 }
