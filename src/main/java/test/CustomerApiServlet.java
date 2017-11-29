@@ -2,8 +2,9 @@ package test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import test.dao.CustomerDao;
-import test.model.Customer;
+import test.domain.Customer;
 
+import javax.persistence.OneToMany;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,14 +18,14 @@ public class CustomerApiServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     CustomerDao dao = new CustomerDao();
 
+    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
 
         res.setContentType("application/json");
 
-        if(req.getParameter("id") != null) {
-            Long id = Long.parseLong(req.getParameter("id"));
-            new ObjectMapper().writeValue(res.getOutputStream(), dao.getCustomer(id));
+        if (req.getParameter("id") != null) {
+            new ObjectMapper().writeValue(res.getOutputStream(), dao.getCustomer(Long.parseLong(req.getParameter("id"))));
         } else {
             new ObjectMapper().writeValue(res.getOutputStream(), dao.getCustomers());
         }
@@ -34,19 +35,17 @@ public class CustomerApiServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
-            String input = Util.asString(req.getInputStream());
-            Customer customer = new ObjectMapper().readValue(input, Customer.class);
+        Customer customer = new ObjectMapper().readValue(req.getInputStream(), Customer.class);
 
-            dao.insertCustomer(customer);
+        dao.insertCustomer(customer);
 
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        if(req.getParameter("id") != null) {
-            Long id = Long.parseLong(req.getParameter("id"));
-            dao.deleteCustomer(id);
+        if (req.getParameter("id") != null) {
+            dao.deleteCustomer(Long.parseLong(req.getParameter("id")));
         } else {
             dao.deleteAllCustomers();
         }

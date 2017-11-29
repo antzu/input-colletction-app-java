@@ -1,8 +1,11 @@
 package test.dao;
 
-import test.model.Customer;
+import test.domain.Customer;
 import test.util.DataSourceProvider;
+import test.util.JpaUtil;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,94 +14,91 @@ public class CustomerDao {
 
 
     public List<Customer> getCustomers() {
-        List<Customer> customers = new ArrayList<>();
+        EntityManager em = null;
 
+        try{
+            em = JpaUtil.getFactory().createEntityManager();
 
-        try (Connection conn = DataSourceProvider.getDataSource().getConnection();
-             Statement stmt = conn.createStatement()) {
+            TypedQuery<Customer> query = em.createQuery("select distinct c from Customer c left join fetch c.phones", Customer.class);
 
-            try (ResultSet r = stmt.executeQuery("select * from customers")) {
-                while (r.next()) {
-                    customers.add(new Customer(r.getLong(1),r.getString(2), r.getString(3), r.getString(4)));
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+            return query.getResultList();
+
+        } finally {
+
+            JpaUtil.closeQuietly(em);
         }
-
-        return customers;
     }
 
     public Customer getCustomer(Long customerId) {
 
-        Customer customer = new Customer();
-        String query = "select * from customers where id = ?";
+        EntityManager em = null;
 
-        try (Connection conn = DataSourceProvider.getDataSource().getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+        try {
 
-            ps.setLong(1, customerId);
+            em = JpaUtil.getFactory().createEntityManager();
+            TypedQuery<Customer> query = em.createQuery("select c from Customer c left join fetch c.phones where c.id = :id", Customer.class);
+            query.setParameter("id", customerId);
+            return query.getSingleResult();
 
+        } finally {
 
-            try (ResultSet r = ps.executeQuery()) {
-                while (r.next()) {
-                    customer.setId(r.getLong(1));
-                    customer.setFirstName(r.getString(2));
-                    customer.setLastName(r.getString(3));
-                    customer.setCode(r.getString(4));
-                }
+            JpaUtil.closeQuietly(em);
 
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
-
-        return customer;
     }
 
 
     public void deleteCustomer(Long id) {
 
-        String query = "delete from customers where id = ?";
+        EntityManager em = null;
 
-        try (Connection conn = DataSourceProvider.getDataSource().getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+        try {
 
-            ps.setLong(1, id);
-            ps.executeUpdate();
+            em = JpaUtil.getFactory().createEntityManager();
 
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+            em.getTransaction().begin();
+            em.remove(em.createQuery("select c from Customer c left join fetch c.phones where c.id = :id", Customer.class)
+                    .setParameter("id", id).getSingleResult());
+            em.getTransaction().commit();
+
+        } finally {
+
+            JpaUtil.closeQuietly(em);
+
         }
     }
 
     public void insertCustomer(Customer customer) {
-        try (Connection conn = DataSourceProvider.getDataSource().getConnection();
-             PreparedStatement ps = conn.prepareStatement(
-                     "   INSERT INTO CUSTOMERS (id, firstName, lastName, code) VALUES (NEXT VALUE FOR seq1, ?, ?, ?)")) {
+        EntityManager em = null;
 
-            ps.setString(1, customer.getFirstName());
-            ps.setString(2, customer.getLastName());
-            ps.setString(3, customer.getCode());
-            ps.executeUpdate();
+        try {
 
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+            em = JpaUtil.getFactory().createEntityManager();
+
+            em.getTransaction().begin();
+            em.persist(customer);
+            em.getTransaction().commit();
+
+        } finally {
+
+            JpaUtil.closeQuietly(em);
+
         }
     }
 
     public void deleteAllCustomers() {
 
-        String query = "delete from customers";
+        EntityManager em = null;
 
-        try (Connection conn = DataSourceProvider.getDataSource().getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+        try {
+            em = JpaUtil.getFactory().createEntityManager();
 
-            ps.executeUpdate();
+            em.getTransaction().begin();
+            em.createQuery("delete from Customer").executeUpdate();
+            em.getTransaction().commit();
 
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } finally {
+            JpaUtil.closeQuietly(em);
         }
     }
 }
