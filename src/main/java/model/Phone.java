@@ -1,9 +1,8 @@
-package test.domain;
+package model;
 
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Data
 @Entity

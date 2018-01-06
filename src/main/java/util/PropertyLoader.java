@@ -1,9 +1,9 @@
-package test.util;
+package util;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,12 +14,12 @@ public class PropertyLoader {
 
     private static Properties cache;
 
-    public static HashMap<String, String> getPropertiesAsMap() {
+    public HashMap<String, String> getPropertiesAsMap() {
         Properties properties = getProperties();
 
-        HashMap<String, String> hashMap = new HashMap<>();
+        HashMap<String, String> hashMap = new HashMap<String, String>();
 
-        for (Map.Entry<Object, Object> each : properties.entrySet()) {
+        for (Entry<Object, Object> each : properties.entrySet()) {
             String value = each.getValue().toString();
             hashMap.put(each.getKey().toString(), replaceSystemVariables(value));
         }
@@ -27,20 +27,28 @@ public class PropertyLoader {
         return hashMap;
     }
 
-    public static String getProperty(String key) {
-        return getProperties().getProperty(key);
+    public String getProperty(String key) {
+        String value = getProperties().getProperty(key);
+        if (value == null) {
+            throw new IllegalStateException("no such property: " + key);
+        }
+        return value;
     }
 
-    public static Properties getProperties() {
+    public Properties getProperties() {
         if (cache != null) {
             return cache;
         }
 
         Properties properties = new Properties();
+        try (InputStream is = PropertyLoader.class.getClassLoader()
+                .getResourceAsStream(PROPERTIES_FILENAME)) {
 
-        try {
-            String contents = FileUtil.readFileFromClasspath(PROPERTIES_FILENAME);
-            properties.load(new ByteArrayInputStream(contents.getBytes()));
+            if (is == null) {
+                throw new IllegalStateException("can't load file: " + PROPERTIES_FILENAME);
+            }
+
+            properties.load(is);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -50,7 +58,7 @@ public class PropertyLoader {
         return properties;
     }
 
-    private static String replaceSystemVariables(String value) {
+    private String replaceSystemVariables(String value) {
         Pattern pattern = Pattern.compile("\\$\\{([^}]+)\\}");
         Matcher matcher = pattern.matcher(value);
         StringBuffer buf = new StringBuffer();

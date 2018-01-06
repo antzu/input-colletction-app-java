@@ -1,4 +1,4 @@
-package test.domain;
+package model;
 
 import lombok.Data;
 

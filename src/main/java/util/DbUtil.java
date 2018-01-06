@@ -1,4 +1,4 @@
-package test.util;
+package util;
 
 import java.sql.Connection;
 import java.sql.Statement;
@@ -19,10 +19,16 @@ public class DbUtil {
     }
 
     public static List<String> getSqlStatements(String statements) {
-        return Stream.of(statements.split(";"))
-                .filter(line -> !line.trim().isEmpty())
+        return Stream.of(clean(statements).split(";"))
                 .collect(Collectors.toList());
     }
 
+    private static String clean(String statements) {
+        return Stream.of(statements.split("[\r\n]+"))
+                .map(line -> line.trim())
+                .filter(line -> !line.isEmpty())
+                .filter(line -> !line.startsWith("--"))
+                .collect(Collectors.joining("\n"));
+    }
 
 }
