@@ -31,7 +31,8 @@ INSERT INTO Project (id, name, createdBy, createdOn) VALUES (NEXT VALUE FOR proj
 
 CREATE TABLE Formgroup(
        id BIGINT NOT NULL PRIMARY KEY,
-       name VARCHAR(255) NOT NULL
+       name VARCHAR(255) NOT NULL,
+       projectId BIGINT NOT NULL
 );
 
 CREATE TABLE Formfield(
@@ -47,8 +48,8 @@ CREATE TABLE Formvalue(
       value VARCHAR (255)
 );
 
-INSERT INTO Formgroup (id, name) VALUES (NEXT VALUE FOR formgroupseq, 'Planning');
-INSERT INTO Formgroup (id, name) VALUES (NEXT VALUE FOR formgroupseq, 'Production');
+INSERT INTO Formgroup (id, name, projectId) VALUES (NEXT VALUE FOR formgroupseq, 'Planning', 1);
+INSERT INTO Formgroup (id, name, projectId) VALUES (NEXT VALUE FOR formgroupseq, 'Production', 1);
 
 INSERT INTO Formfield (id, formgroupId, name, type) VALUES (NEXT VALUE FOR formfieldseq, 1, 'SKU name', 'text');
 INSERT INTO Formfield (id, formgroupId, name, type) VALUES (NEXT VALUE FOR formfieldseq, 1, 'Producer', 'text');

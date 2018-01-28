@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,4 +31,9 @@ public class Project {
     @Column(name = "createdOn")
     @NotNull
     private Date createdOn;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false, name = "projectId")
+    private List<Formgroup> formgroups;
+
 }

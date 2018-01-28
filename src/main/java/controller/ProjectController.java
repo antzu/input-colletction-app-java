@@ -1,9 +1,9 @@
 package controller;
 
 import dao.ProjectDao;
+import model.Customer;
 import model.Project;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -17,5 +17,15 @@ public class ProjectController {
     @GetMapping("projects")
     public List<Project> getAllProjects(){
         return dao.getAllProjects();
+    }
+
+    @PostMapping("projects")
+    public void newProject(@RequestBody Project project) {
+        dao.newProject(project);
+    }
+
+    @GetMapping("projects/{id}")
+    public Project getProject(@PathVariable Long id) {
+        return dao.findById(id);
     }
 }
