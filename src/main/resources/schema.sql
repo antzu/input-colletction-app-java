@@ -1,6 +1,7 @@
 DROP SCHEMA public CASCADE;
 
 CREATE SEQUENCE seq1 START WITH 1;
+CREATE SEQUENCE projectseq START WITH 1;
 CREATE SEQUENCE formgroupseq START WITH 1;
 CREATE SEQUENCE formfieldseq START WITH 1;
 CREATE SEQUENCE formvalueseq START WITH 1;
@@ -18,6 +19,15 @@ CREATE TABLE Phone (
        type VARCHAR(255),
        value VARCHAR(255)
 );
+
+CREATE TABLE Project(
+      id BIGINT NOT NULL PRIMARY KEY,
+      name VARCHAR(255) NOT NULL,
+      createdBy VARCHAR (255) NOT NULL,
+      createdOn TIMESTAMP NOT NULL
+);
+
+INSERT INTO Project (id, name, createdBy, createdOn) VALUES (NEXT VALUE FOR projectseq, 'New project', 'Andres', now());
 
 CREATE TABLE Formgroup(
        id BIGINT NOT NULL PRIMARY KEY,
