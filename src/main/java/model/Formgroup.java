@@ -24,7 +24,7 @@ public class Formgroup {
     @NotNull
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "formgroupId")
     private List<Formfield> fields;
 }

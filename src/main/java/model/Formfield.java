@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,4 +26,8 @@ public class Formfield {
     @Column(name = "type")
     @NotNull
     private String type;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "formfieldId")
+    private List<Formvalue> formvalue;
 }
