@@ -6,17 +6,15 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Entity
-public class Formgroup {
+public class Formfield {
 
     @Id
-    @SequenceGenerator(name = "my_seq", sequenceName = "formgroupseq", allocationSize = 1)
+    @SequenceGenerator(name = "my_seq", sequenceName = "formfieldseq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "my_seq")
     private Long id;
 
@@ -24,7 +22,7 @@ public class Formgroup {
     @NotNull
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "formgroupId")
-    private List<Formfield> fields;
+    @Column(name = "type")
+    @NotNull
+    private String type;
 }

@@ -15,7 +15,7 @@ public class FormgroupJpaDao implements FormgroupDao {
 
     @Override
     public List<Formgroup> getAllFormGroups() {
-        return em.createQuery("select f from Formgroup f", Formgroup.class)
+        return em.createQuery("select f from Formgroup f left join fetch f.fields", Formgroup.class)
                 .getResultList();
     }
 }
