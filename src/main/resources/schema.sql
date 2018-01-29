@@ -2,6 +2,8 @@ DROP SCHEMA public CASCADE;
 
 CREATE SEQUENCE seq1 START WITH 1;
 CREATE SEQUENCE projectseq START WITH 1;
+CREATE SEQUENCE formgrouptempseq START WITH 1;
+CREATE SEQUENCE formfieldtempseq START WITH 1;
 CREATE SEQUENCE formgroupseq START WITH 1;
 CREATE SEQUENCE formfieldseq START WITH 1;
 CREATE SEQUENCE formvalueseq START WITH 1;
@@ -28,6 +30,27 @@ CREATE TABLE Project(
 );
 
 INSERT INTO Project (id, name, createdBy, createdOn) VALUES (NEXT VALUE FOR projectseq, 'New project', 'Andres', now());
+
+CREATE TABLE FormgroupClassifiers(
+      id BIGINT NOT NULL PRIMARY KEY,
+      name VARCHAR (255) NOT NULL
+);
+
+INSERT INTO FormgroupClassifiers (id, name) VALUES (NEXT VALUE FOR formgrouptempseq, 'Planning');
+INSERT INTO FormgroupClassifiers (id, name) VALUES (NEXT VALUE FOR formgrouptempseq, 'Production');
+
+CREATE TABLE FormfieldClassifiers(
+      id BIGINT NOT NULL PRIMARY KEY,
+      formgroupId BIGINT NOT NULL,
+      name VARCHAR(255) NOT NULL,
+      type VARCHAR (255) NOT NULL
+);
+
+INSERT INTO FormfieldClassifiers (id, formgroupId, name, type) VALUES (NEXT VALUE FOR formfieldtempseq, 1, 'SKU name', 'text');
+INSERT INTO FormfieldClassifiers (id, formgroupId, name, type) VALUES (NEXT VALUE FOR formfieldtempseq, 1, 'Producer', 'text');
+INSERT INTO FormfieldClassifiers (id, formgroupId, name, type) VALUES (NEXT VALUE FOR formfieldtempseq, 2, 'Minumum produ qty', 'text');
+INSERT INTO FormfieldClassifiers (id, formgroupId, name, type) VALUES (NEXT VALUE FOR formfieldtempseq, 2, 'Production time days', 'text');
+
 
 CREATE TABLE Formgroup(
        id BIGINT NOT NULL PRIMARY KEY,

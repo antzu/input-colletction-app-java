@@ -28,4 +28,9 @@ public class ProjectController {
     public Project getProject(@PathVariable Long id) {
         return dao.findById(id);
     }
+
+    @PostMapping("projects/{id}")
+    public void generateProjectForm(@PathVariable Long id){
+        dao.generateProjectForm(id);
+    }
 }

@@ -10,4 +10,6 @@ public interface ProjectDao {
     void newProject(Project project);
 
     Project findById(Long id);
+
+    void generateProjectForm(Long id);
 }
